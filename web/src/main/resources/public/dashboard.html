@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Title here -->
+    <title>OmniChart</title>
+    <!-- Description, Keywords and Author -->
+    <meta name="description" content="Your description">
+    <meta name="keywords" content="Your,Keywords">
+    <meta name="author" content="Trind">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Styles -->
+    <!-- jqueryUi-->
+    <link href="css/jquery-ui.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+
+    <!-- Font awesome CSS -->
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <!-- jQuery gritter -->
+    <link href="css/jquery.gritter.css" rel="stylesheet">
+
+
+    <!-- Custom Color CSS -->
+    <link href="css/less-style.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="#">
+</head>
+
+<script>
+
+
+</script>
+
+<script type="text/html" id="configuration">
+    <span data-bind='foreach: configurableFields' style="width:100%">
+            <!-- ko if: type() == 'INPUT' -->
+                <div class="input-group-custom col-lg-2 col-md-3 col-xs-4">
+                    <label style="display: inline;width : auto;" data-bind="text: label"></label>
+                    <input style="display: inline;width : auto;" type="text" class="form-control"
+                           data-bind="value: variable"/>
+                </div>
+            <!-- /ko -->
+            <!-- ko if: type() == 'CHECKBOX' -->
+                <div class="input-group-custom col-lg-2 col-md-3 col-xs-4">
+                    <label style="display: inline;width : auto;" data-bind="text: label"></label>
+                    <input style="display: inline;width : auto;" type="checkbox" data-bind="checked: variable"/>
+                </div>
+            <!-- /ko -->
+            <!-- ko if: type() == 'AUTOCOMPLETE' -->
+                <div class="input-group-custom col-lg-2 col-md-3 col-xs-4">
+                    <label style="display: inline;width : auto;" data-bind="text: label"></label>
+                    <input style="display: inline;width : auto;" type="text" class="form-control"
+                           data-bind="jqAuto: { value: variable, source: getOptions }"/>
+                </div>
+           <!-- /ko -->
+            <!-- ko if: type() == 'SELECT' -->
+                <div class="input-group-custom col-lg-2 col-md-3 col-xs-4">
+                    <label style="display: inline;width : auto;" data-bind="text: label"></label>
+                    <select style="display: inline;width : auto;" data-bind="options:computedList,
+                    value:variable,optionsCaption: 'Choose...'"></select>
+                </div>
+            <!-- /ko -->
+        </span>
+
+
+</script>
+
+
+<body id="body">
+
+<div class="outer">
+
+<!-- Sidebar starts -->
+<div class="sidebar">
+
+    <div class="sidey">
+
+        <!-- Logo -->
+        <div class="logo">
+            <h1><a href="dashboard.html"><i
+                    class="fa fa-desktop br-lblue"></i>OmniChart<span>Charts from everywere</span></a></h1>
+        </div>
+
+        <!-- Sidebar navigation starts -->
+
+        <!-- Responsive dropdown -->
+        <div class="sidebar-dropdown"><a href="#" class="br-red"><i class="fa fa-bars"></i></a></div>
+
+        <div class="side-nav">
+
+            <div class="side-nav-block">
+                <!-- Sidebar heading -->
+                <h4>Main</h4>
+                <!-- Sidebar links -->
+                <ul class="list-unstyled">
+                    <li><a href=""><i class="fa fa-desktop"></i>Dashboard</a></li>
+                </ul>
+            </div>
+
+            <div class="side-nav-block">
+                <h4>Menu</h4>
+                <ul class="list-unstyled">
+                    <li><a href="0-base.html" class="active"><i class="fa fa-desktop"></i> Blank Page</a></li>
+                    <li><a href="#modalSaveTemplate" data-toggle="modal"><i class="fa fa-lock"></i>Save Template</a></li>
+                    <li><a href="login.html"><i class="fa fa-sign-in"></i> Login</a></li>
+                    <li><a href="404.html"><i class="fa fa-times"></i> Error Page</a></li>
+                    <li><a href="grid.html"><i class="fa fa-th-large"></i> Grids</a></li>
+                    <li><a href="lock.html"><i class="fa fa-lock"></i> Lock</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sidebar navigation ends -->
+
+    </div>
+</div>
+<!-- Sidebar ends -->
+
+<!-- Mainbar starts -->
+<div class="mainbar" id="bar">
+
+    <!-- Mainbar head starts -->
+    <div class="main-head">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-1 col-sm-2 col-xs-3">
+                    <!-- Page title -->
+                    <h2><i class="fa fa-desktop lblue"></i> Dashboard</h2>
+                </div>
+
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                    <!-- Search block -->
+                    <div class="head-search">
+                        <form class="form" role="form" id="searchform" data-bind="submit:search">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search..."
+                                       data-bind='value:queryString, valueUpdate: "afterkeydown"'>
+                                  <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button"><i class="fa fa-search"></i>
+                                    </button>
+                                  </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                    <div id="datetimepickerfrom" class="input-append input-group dtpicker"
+                         data-bind="datetimepicker:timeFrom">
+                        <input class="form-control" type="text" data-date-format="YYYY-MM-DD HH:mm:ss"
+                               data-bind="value:timeFrom">
+                        <span class="input-group-addon add-on">
+                        <i class="fa fa-calendar" data-date-icon="fa fa-calendar" data-time-icon="fa fa-times"></i>
+                        </span>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6">
+                    <!-- Notifications -->
+                    <div id="datetimepickerto" class="input-append input-group dtpicker"
+                         data-bind="datetimepicker:timeTo">
+                        <input class="form-control" type="text" data-date-format="YYYY-MM-DD HH:mm:ss"
+                               data-bind="value:timeTo">
+                        <span class="input-group-addon add-on">
+                        <i class="fa fa-calendar" data-date-icon="fa fa-calendar" data-time-icon="fa fa-times"></i>
+                        </span>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-md-1 col-sm-1 hidden-xs">
+                    <div class="head-noty text-center" style="float:left;">
+                        <a id="notifications" class="mhead-icon" onclick="$('#filters').toggle()">
+                            <i class="fa fa-filter"></i>
+                            <span class="label label-info" data-bind="text: filters().length"></span>
+                        </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mainbar head ends -->
+    <div class="container" style="padding-bottom:0px; padding-top:20px;padding-left:20px;display:none;"
+         id="filters">
+        <div data-bind='foreach: { data: filters, includeDestroyed: true }'>
+            <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+
+                <div class="widget">
+                    <div class="widget-head br-purple">
+                        <h3 class="pull-left" data-bind="text:  $data.type"></h3>
+
+                        <div class="pull-right"><a class="fa fa-times" href="#"
+                                                   data-bind="click: $parent.removeFilter"></a>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="widget-body">
+                        <div class="input-group input-group-sm col-lg-12" data-bind="if: $data.field">
+                            <div class="col-lg-4">
+                                <label class="control-label">Field</label>
+                            </div>
+                            <div class="col-lg-8">
+                                <input class="form-control" data-bind="textInput:  $data.field"/>
+                            </div>
+                        </div>
+                        <div class="input-group input-group-sm col-lg-12" data-bind="if: $data.value">
+                            <div class="col-lg-4">
+
+                                <label class=control-label">Value</label>
+                            </div>
+                            <div class="col-lg-8">
+                                <input class="form-control" data-bind="textInput:  $data.value"/>
+                            </div>
+                        </div>
+                        <div class="input-group input-group-sm col-lg-12" data-bind="if: $data.occur">
+                            <div class="col-lg-4">
+                                <label class="control-label">Occurs</label>
+                            </div>
+                            <div class="col-lg-8">
+                                <select data-bind="value: $data.occur">
+                                    <option value="SHOULD">Should</option>
+                                    <option value="MUST">Must</option>
+                                    <option value="MUST_NOT">Must not</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="page-content">
+                <!-- Heading -->
+                <div class="single-head">
+                    <!-- Heading -->
+                    <div data-bind='foreach: { data: rows,as: "row", includeDestroyed: true }'>
+                        <div name="row" class="row">
+                            <a href="#modalRow" style="position: absolute;left:30px;"
+                               data-bind="click: $parent.editRow,visible: $parent.edit()" data-toggle="modal"
+                               class="fa fa-pencil-square-o"></a>
+
+                            <div data-bind='foreach: { data: row.columns, as: "col", includeDestroyed: true,afterRender :addColumn}'>
+                                <div name="column"
+                                     data-bind="css:styleClass,attr: { id: $parentContext.$index()+''+ $index() }">
+                                    <div class="widget">
+                                        <div class="widget-head br-lblue">
+                                            <h3 class="pull-left" data-bind="text:col.title()"></h3>
+
+
+                                            <div class="pull-right"
+                                                 data-bind="attr: { id: $parentContext.$index()+''+ $index()+'action' }"></div>
+                                            <div class="pull-right">
+                                                <a href="#modalEditColumn"
+                                                   data-bind="click: $parent.editColumn,visible: $root.edit()"
+                                                   data-toggle="modal"
+                                                   class="fa fa-pencil-square-o"></a>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        <div data-bind="style: { height: row.height()+'px'},attr: { id: $parentContext.$index()+''+ $index()+'cont'}"
+                                             class="widget-body no-padd"/>
+                                        &nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-bind="visible: $root.edit(),if: row.columns().length == 0,style: { height: row.height()+'px'}"
+                             style="padding-left: 30px;" name="row" class="row">
+                            Please add columns to this row.
+                            <br/>
+                            <br/>
+                        </div>
+
+                    </div>
+
+
+                </div>
+                <div class="pull-right" data-bind="visible: $root.edit()">
+                    <a href="#modalRow" class="btn btn-info btn-sm " data-toggle="modal"
+                       data-bind="click: createRow">Add new row</a>
+                </div>
+                <!-- Bread crumbs -->
+                <div class="breads pull-right">
+                    <!--
+                                        <strong>Nav</strong> : <a href="#">Home</a> / <a href="#">Sign</a> / Home
+                    -->
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+</div>
+<!-- Mainbar ends -->
+
+<div class="clearfix"></div>
+
+<!-- Modals --->
+
+
+<!-- Modal column-->
+<div id="modalEditColumn" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalColumnLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h4 class="modal-title">Edit Column</h4>
+            </div>
+            <div class="modal-body">
+            <span data-bind="with:columnToEdit">
+                <span data-bind="with:search, as search">
+                       <div data-bind='foreach: { data: queries(),as: "query"}'>
+                           <div class="row well">
+                               <div class="col-lg-1 col-md-2 col-xs-3">
+                                   <select data-bind="options:$root.getSources(),
+                                           value:queryTargetType().id,
+                                            optionsText: 'id',
+                                            optionsValue: 'id',
+                                            optionsCaption: 'Choose...',
+                                            event:{ change: changeQueryTargetId}">
+                                   </select>
+                               </div>
+                               <div class="col-lg-11 col-md-10 col-xs-9">
+                                        <span data-bind="with:queryTargetType" style="width:100%">
+                                               <div data-bind="template: { name: 'configuration'}"></div>
+                                               <div class="pull-right">
+                                                   <a class="fa fa-times"
+                                                      data-bind="click: $parents[1].removeQuery.bind($data,$parent)"
+                                                      href=""></a>
+                                               </div>
+                                        </span>
+                               </div>
+                               <div class="col-lg-1 col-md-2 col-xs-3">
+                                   <select data-bind="options:$root.getQueries(),
+                                                value:queryType,
+                                                optionsValue: 'queryType',
+                                                optionsText: 'name',
+                                                optionsCaption: 'Choose...',
+                                                event:{ change: $parent.changeQueryType}">
+                                   </select>
+                               </div>
+                               <div class="col-lg-11 col-md-10 col-xs-9">
+                                   <div data-bind="template: { name: 'configuration'}"></div>
+                               </div>
+                           </div>
+                       </div>
+                    </span>
+                   <div class="row">
+                       <div class="col-xs-12">
+                           Select Chart Type
+                           <select style="display: inline;width : auto;" data-bind="options:getChartNameList(),
+                            value:chartName,optionsCaption: 'Choose...'"></select>
+                            <span data-bind="if:$parent.chart" style="width:100%">
+                               <span data-bind="if:$parent.chart,with:chart" style="width:100%">
+                              <!--        <input style="display: inline;width : auto;" type="text" class="form-control"
+                                             data-bind="value: name"/>-->
+
+                                    <div data-bind="template: { name: 'configuration'}"></div>
+                               </span>
+                            </span>
+                       </div>
+                   </div>
+
+            </span>
+            </div>
+            <div class="modal-footer">
+                <span data-bind="with:columnToEdit">
+                    <span data-bind="with:search, as search">
+                        <button type="button" class="btn btn-info btn-sm"
+                                data-bind="click: addQuery">Add Query
+                        </button>
+                    </span>
+                </span>
+                <button type="button" class="btn btn-info btn-sm" data-dismiss="modal"
+                        data-bind="click: $root.searchEditedColumn" aria-hidden="true">Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal column-->
+
+<!--modal row -->
+<div id="modalRow" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalRowLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h4 class="modal-title">Edit Row</h4>
+            </div>
+            <div class="modal-body">
+
+
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="active"><a href="#rowModalRow" role="tab" data-toggle="tab">Row</a></li>
+                    <li><a href="#rowModalColumns" role="tab" data-toggle="tab">Columns</a></li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="rowModalRow">
+                        <div class="row">
+
+                            <label for="height" class="control-label col-lg-3">Height</label>
+
+                            <div class="col-lg-9">
+                                <!-- ko if: rowToEdit -->
+                                <input type="text" data-bind="value: rowToEdit().height"/>
+                                <!-- /ko -->
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="tab-pane" id="rowModalColumns">
+                        <span data-bind="with:rowToEdit">
+
+                                <table style="width:100%">
+                                    <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Large</th>
+                                        <th>Medium</th>
+                                        <th>Small</th>
+                                        <th>Extra Small</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody data-bind='foreach: { data: columns,as: "col",includeDestroyed: true}'>
+                                    <tr>
+                                        <td>
+                                            <input type="text" data-bind="value: title"/>
+                                        </td>
+                                        <td>
+                                            <input type="text" size="2" data-bind="value: sizeLG"/>
+                                        </td>
+                                        <td>
+                                            <input type="text" size="2" data-bind="value: sizeMD"/>
+                                        </td>
+                                        <td>
+                                            <input type="text" size="2" data-bind="value: sizeSM"/>
+                                        </td>
+                                        <td>
+                                            <input type="text" size="2" data-bind="value: sizeXS"/>
+                                        </td>
+                                        <td>
+                                            <a href="" class="fa fa-times" data-bind="click: removeColumn"></a>&nbsp;
+                                            <a href="" class="fa fa-angle-double-left" data-bind="click: moveLeft"></a>
+                                            <a href="" class="fa fa-angle-double-right"
+                                               data-bind="click: moveRight"></a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </span>
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <span data-bind="with:rowToEdit">
+                    <button type="button" class="btn btn-info btn-sm" data-bind="click: createColumn">Add Column
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"
+                            data-bind="click: removeRow">Remove
+                    </button>
+                    <button type="button" class="btn btn-info btn-sm" data-dismiss="modal" aria-hidden="true">Save
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!--end modal row -->
+
+<!-- Modal save templatecolumn-->
+<div id="modalSaveTemplate" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalColumnLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h4 class="modal-title">Save Template</h4>
+            </div>
+            <div class="modal-body">
+                <label for="templatename">Template namn:</label>
+                <input id="templatename" type="text" size="20" data-bind="value: templateName"/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info btn-sm" data-dismiss="modal"
+                        data-bind="click: $root.saveTemplate" aria-hidden="true">Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end Modal column-->
+
+
+<script src="js/knockout-3.2.0.js"></script>
+<script src="js/jquery-2.1.1.js"></script>
+
+
+
+<script src="js/highcharts.js"></script>
+<script type="text/javascript" src="js/exporting.src.js"></script>
+<!-- Javascript files -->
+<!-- jQuery -->
+<!--
+<script src="js/jquery.js"></script>
+-->
+<!-- Bootstrap JS -->
+<script src="js/bootstrap.min.js"></script>
+<!-- jQuery UI -->
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/moment.js"></script>
+
+<!-- Date Time Picker JS -->
+<script src="js/bootstrap-datetimepicker.min.js"></script>
+<!-- Bootstrap wysihtml5 JS -->
+<script src="js/wysihtml5-0.3.0.js"></script>
+
+
+<script src="js/prettify.js"></script>
+<script src="js/bootstrap-wysihtml5.min.js"></script>
+<!-- Validate JS -->
+<script src="js/jquery.validate.js"></script>
+<!-- Form wizard steps  JS -->
+<script src="js/jquery.steps.min.js"></script>
+<!-- jQuery Knob -->
+<script src="js/jquery.knob.js"></script>
+<!-- jQuery slim scroll -->
+<script src="js/jquery.slimscroll.min.js"></script>
+<!-- Data Tables JS -->
+<script src="js/jquery.dataTables.min.js"></script>
+<!-- Pretty Photo JS -->
+<script src="js/jquery.prettyPhoto.js"></script>
+<!-- Rate It JS -->
+<script src="js/jquery.rateit.min.js"></script>
+<!-- jQuery full calendar -->
+<script src="js/fullcalendar.min.js"></script>
+<!-- jQuery gritter -->
+<script src="js/jquery.gritter.min.js"></script>
+<!-- jQuery gritter notification -->
+<!--
+		<script src="js/custom.notification.js"></script>
+-->
+<!-- Respond JS for IE8 -->
+<script src="js/respond.min.js"></script>
+<!-- HTML5 Support for IE -->
+<script src="js/html5shiv.js"></script>
+<!-- Custom JS -->
+<script src="js/custom.js"></script>
+
+<script src="js/knockout-jqAutocomplete.js"></script>
+<script src="js/knockout-binding.js"></script>
+<script src="js/highcharts-3d.js"></script>
+
+
+<script type="text/javascript" src="application/js/pageview.js"></script>
+<script type="text/javascript" src="application/js/inputtypes.js"></script>
+<script type="text/javascript" src="application/js/typeMappings.js"></script>
+<script type="text/javascript" src="application/js/template.js"></script>
+<script type="text/javascript" src="application/js/filter.js"></script>
+<script type="text/javascript" src="application/js/query.js"></script>
+<script type="text/javascript" src="application/js/queryresult.js"></script>
+<script type="text/javascript" src="application/js/querytargettype.js"></script>
+<script type="text/javascript" src="application/js/search.js"></script>
+<script type="text/javascript" src="application/js/chart/help.js"></script>
+<script type="text/javascript" src="application/js/chart/pie.js"></script>
+<script type="text/javascript" src="application/js/chart/bar.js"></script>
+<script type="text/javascript" src="application/js/chart/3ddonout.js"></script>
+<script type="text/javascript" src="application/js/testData.js"></script>
+
+
+<!-- Javascript for this page -->
+
+<script type="text/javascript">
+
+
+</script>
+
+</body>
+</html>
