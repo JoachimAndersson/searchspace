@@ -1,4 +1,4 @@
-package  com.trind.searchspace.backend.factory;
+package com.trind.searchspace.backend.factory;
 
 import com.trind.searchspace.backend.model.DateTimeField;
 import com.trind.searchspace.backend.model.Search;
@@ -7,7 +7,7 @@ import com.trind.searchspace.backend.model.query.*;
 import com.trind.searchspace.backend.model.query.targettype.settings.QueryTargetTypeSettings;
 import com.trind.searchspace.backend.model.result.EmptyQueryResult;
 import com.trind.searchspace.backend.model.result.QueryResult;
-import com.trind.searchspace.backend.service.SearchService;
+import com.trind.searchspace.backend.service.*;
 import com.trind.searchspace.backend.util.DateUtil;
 
 import java.util.List;
@@ -39,18 +39,22 @@ public class SearchTask implements Callable<QueryResult> {
     public QueryResult call() throws Exception {
         QueryResult queryResult = new EmptyQueryResult();
         long searchTime = System.currentTimeMillis();
-        if (QueryType.HISTOGRAM.equals(query.getQueryType())) {
+        if (QueryType.HISTOGRAM.equals(query.getQueryType())
+                && searchService instanceof HistogramSearchService) {
             HistogramQuery histogramQuery = (HistogramQuery) query;
-            queryResult = searchService.search(abstractQueryTargetTypeSettings, histogramQuery, filters, timeField, DateUtil.parse(search.getTimeFrom()), DateUtil.parse(search.getTimeTo()));
-        } else if (QueryType.TERM.equals(query.getQueryType())) {
+            queryResult = ((HistogramSearchService) searchService).search(abstractQueryTargetTypeSettings, histogramQuery, filters, timeField, DateUtil.parse(search.getTimeFrom()), DateUtil.parse(search.getTimeTo()));
+        } else if (QueryType.TERM.equals(query.getQueryType())
+                && searchService instanceof TermSearchService) {
             TermQuery termQuery = (TermQuery) query;
-            queryResult = searchService.search(abstractQueryTargetTypeSettings, termQuery, filters, timeField, DateUtil.parse(search.getTimeFrom()), DateUtil.parse(search.getTimeTo()));
-        } else if (QueryType.LIST.equals(query.getQueryType())) {
+            queryResult = ((TermSearchService) searchService).search(abstractQueryTargetTypeSettings, termQuery, filters, timeField, DateUtil.parse(search.getTimeFrom()), DateUtil.parse(search.getTimeTo()));
+        } else if (QueryType.LIST.equals(query.getQueryType())
+                && searchService instanceof ListSearchService) {
             ListQuery listQuery = (ListQuery) query;
-            queryResult = searchService.search(abstractQueryTargetTypeSettings, listQuery, filters, timeField, DateUtil.parse(search.getTimeFrom()), DateUtil.parse(search.getTimeTo()));
-        } else if (QueryType.STAT.equals(query.getQueryType())) {
+            queryResult = ((ListSearchService) searchService).search(abstractQueryTargetTypeSettings, listQuery, filters, timeField, DateUtil.parse(search.getTimeFrom()), DateUtil.parse(search.getTimeTo()));
+        } else if (QueryType.STAT.equals(query.getQueryType())
+                && searchService instanceof StatSearchService) {
             StatQuery statQuery = (StatQuery) query;
-            queryResult = searchService.search(abstractQueryTargetTypeSettings, statQuery, filters, timeField, DateUtil.parse(search.getTimeFrom()), DateUtil.parse(search.getTimeTo()));
+            queryResult = ((StatSearchService) searchService).search(abstractQueryTargetTypeSettings, statQuery, filters, timeField, DateUtil.parse(search.getTimeFrom()), DateUtil.parse(search.getTimeTo()));
         }
 
         if (queryResult == null) {

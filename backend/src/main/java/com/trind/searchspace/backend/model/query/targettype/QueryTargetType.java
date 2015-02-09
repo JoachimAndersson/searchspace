@@ -1,20 +1,86 @@
 package com.trind.searchspace.backend.model.query.targettype;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.trind.searchspace.backend.model.Parameter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Joachim on 2014-09-15.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "queryTarget")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = ElasticQueryTargetType.class, name = "ELASTICSEARCH")
-})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public interface QueryTargetType {
+public class QueryTargetType {
 
-    QueryTargetEnum getQueryTarget();
+    String id;
+    String queryTarget;
+    List<Parameter> settings = new ArrayList<>();
 
-    String getId();
+    public String getId() {
+        return id;
+    }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getQueryTarget() {
+        return queryTarget;
+    }
+
+    public void setQueryTarget(String queryTarget) {
+        this.queryTarget = queryTarget;
+    }
+
+    public List<Parameter> getSettings() {
+        return settings;
+    }
+
+    public void setSettings(List<Parameter> settings) {
+        this.settings = settings;
+    }
+
+    public String getParameter(String parameter) {
+
+        for (Parameter param : settings) {
+            if (param.getName().equalsIgnoreCase(parameter)) {
+                return param.getValue();
+            }
+        }
+        return null;
+    }
+
+    public void addParameter(Parameter parameter) {
+        settings.remove(parameter);
+        settings.add(parameter);
+    }
+
+    public void addParameter(String parameter, String value) {
+        settings.remove(new Parameter(parameter, value));
+        settings.add(new Parameter(parameter, value));
+    }
+
+    public void removeParameter(Parameter parameter) {
+        settings.remove(parameter);
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof QueryTargetType)) return false;
+
+        QueryTargetType that = (QueryTargetType) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

@@ -1,7 +1,6 @@
-package  com.trind.searchspace.backend.service;
+package com.trind.searchspace.backend.service;
 
 import com.trind.searchspace.backend.model.DateTimeField;
-import com.trind.searchspace.backend.model.Parameter;
 import com.trind.searchspace.backend.model.filter.Filter;
 import com.trind.searchspace.backend.model.query.HistogramQuery;
 import com.trind.searchspace.backend.model.query.ListQuery;
@@ -22,18 +21,12 @@ import java.util.List;
 /**
  * Created by Joachim on 2014-09-15.
  */
-public interface SearchService extends Serializable {
+public interface StatSearchService extends Serializable {
 
-    String getQueryTarget();
-
-    List<String> autoComplete(QueryTargetTypeSettings abstractQueryTargetTypeSettings,
-                              QueryTargetType queryTargetType,
-                              String field, String value);
-
-    List<String> list(QueryTargetTypeSettings abstractQueryTargetTypeSettings,
-                      QueryTargetType queryTargetType, String field);
-
-    List<Parameter> getSettingsParameters();
-
-    List<Parameter> getSearchParameters();
+    StatQueryResult search(QueryTargetTypeSettings abstractQueryTargetTypeSettings,
+                           StatQuery statQuery,
+                           List<Filter> filter,
+                           DateTimeField timeFiled,
+                           LocalDateTime timeFrom,
+                           LocalDateTime timeTo);
 }

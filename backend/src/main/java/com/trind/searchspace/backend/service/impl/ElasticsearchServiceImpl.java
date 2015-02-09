@@ -1,6 +1,8 @@
-package  com.trind.searchspace.backend.service.impl;
+package com.trind.searchspace.backend.service.impl;
 
 import com.trind.searchspace.backend.model.DateTimeField;
+import com.trind.searchspace.backend.model.GuiTypes;
+import com.trind.searchspace.backend.model.Parameter;
 import com.trind.searchspace.backend.model.filter.ExistsFilter;
 import com.trind.searchspace.backend.model.filter.Filter;
 import com.trind.searchspace.backend.model.filter.Occur;
@@ -9,16 +11,14 @@ import com.trind.searchspace.backend.model.query.HistogramQuery;
 import com.trind.searchspace.backend.model.query.ListQuery;
 import com.trind.searchspace.backend.model.query.StatQuery;
 import com.trind.searchspace.backend.model.query.TermQuery;
-import com.trind.searchspace.backend.model.query.targettype.ElasticQueryTargetType;
 import com.trind.searchspace.backend.model.query.targettype.QueryTargetEnum;
 import com.trind.searchspace.backend.model.query.targettype.QueryTargetType;
-import com.trind.searchspace.backend.model.query.targettype.settings.ElasticQueryTargetTypeSettings;
 import com.trind.searchspace.backend.model.query.targettype.settings.QueryTargetTypeSettings;
 import com.trind.searchspace.backend.model.result.HistogramQueryResult;
 import com.trind.searchspace.backend.model.result.ListQueryResult;
 import com.trind.searchspace.backend.model.result.StatQueryResult;
 import com.trind.searchspace.backend.model.result.TermQueryResult;
-import com.trind.searchspace.backend.service.SearchService;
+import com.trind.searchspace.backend.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -56,7 +56,15 @@ import java.util.stream.Collectors;
  * Created by Joachim on 2014-09-15.
  */
 @Service
-public class ElasticsearchServiceImpl implements SearchService {
+public class ElasticsearchServiceImpl
+        implements SearchService, HistogramSearchService,
+        ListSearchService, StatSearchService, TermSearchService {
+
+    public static final String CLUSTER_NAME = "ClusterName";
+    public static final String ADDRESS = "Address";
+    public static final String INDEX = "Index";
+    public static final String TYPE = "Type";
+    public static final String FIELD = "Field";
 
     private static Map<QueryTargetTypeSettings, TransportClient> elasticClients = new HashMap<>();
 
@@ -66,13 +74,12 @@ public class ElasticsearchServiceImpl implements SearchService {
             return client;
         }
 
-        ElasticQueryTargetTypeSettings elasticQueryTargetTypeSettings = (ElasticQueryTargetTypeSettings) abstractQueryTargetTypeSettings;
 
         Settings settings = ImmutableSettings.settingsBuilder()
-                .put("cluster.name", elasticQueryTargetTypeSettings.getClusterName()).build();
+                .put("cluster.name", abstractQueryTargetTypeSettings.getParameter(CLUSTER_NAME)).build();
         client = new TransportClient(settings);
 
-        String[] addresses = elasticQueryTargetTypeSettings.getAddress().split(";");
+        String[] addresses = abstractQueryTargetTypeSettings.getParameter(ADDRESS).split(";");
 
         for (String address : addresses) {
             String[] split = address.split(":");
@@ -86,9 +93,6 @@ public class ElasticsearchServiceImpl implements SearchService {
 
     }
 
-    private ElasticQueryTargetType getElastichQueryTargetType(QueryTargetType queryTargetType) {
-        return (ElasticQueryTargetType) queryTargetType;
-    }
 
     private FilterBuilder createFilter(Filter filter) {
         if (filter instanceof TermFilter) {
@@ -139,38 +143,37 @@ public class ElasticsearchServiceImpl implements SearchService {
 
 
     private SearchRequestBuilder getSearchRequestBuilder(QueryTargetTypeSettings abstractQueryTargetTypeSettings, TermQuery termQuery) {
-        ElasticQueryTargetType elastichQueryTargetType = getElastichQueryTargetType(termQuery.getQueryTargetType());
 
         QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryString(termQuery.getQueryString());
 
-        SearchRequestBuilder searchRequestBuilder = getClient(abstractQueryTargetTypeSettings).prepareSearch(getIndexes(elastichQueryTargetType)).
+        SearchRequestBuilder searchRequestBuilder = getClient(abstractQueryTargetTypeSettings).prepareSearch(getIndexes(abstractQueryTargetTypeSettings)).
                 setQuery(queryStringQueryBuilder);
 
-        if (StringUtils.isNotBlank(elastichQueryTargetType.getType())) {
-            searchRequestBuilder = searchRequestBuilder.setTypes(getTypes(elastichQueryTargetType));
+        if (StringUtils.isNotBlank(abstractQueryTargetTypeSettings.getParameter(TYPE))) {
+            searchRequestBuilder = searchRequestBuilder.setTypes(getTypes(abstractQueryTargetTypeSettings));
         }
         return searchRequestBuilder;
     }
 
-    private String[] getIndexes(ElasticQueryTargetType elastichQueryTargetType) {
-        if (StringUtils.isEmpty(elastichQueryTargetType.getIndex())) {
+    private String[] getIndexes(QueryTargetType elastichQueryTargetType) {
+        if (StringUtils.isEmpty(elastichQueryTargetType.getParameter(INDEX))) {
             return new String[0];
         }
-        return elastichQueryTargetType.getIndex().split(",");
+        return elastichQueryTargetType.getParameter(INDEX).split(",");
     }
 
-    private String[] getTypes(ElasticQueryTargetType elastichQueryTargetType) {
-        if (StringUtils.isEmpty(elastichQueryTargetType.getType())) {
+    private String[] getTypes(QueryTargetType elastichQueryTargetType) {
+        if (StringUtils.isEmpty(elastichQueryTargetType.getParameter(TYPE))) {
             return new String[0];
         }
 
-        return StringUtils.split(elastichQueryTargetType.getType(), ",");
+        return StringUtils.split(elastichQueryTargetType.getParameter(TYPE), ",");
     }
 
 
     @Override
-    public QueryTargetEnum getQueryTarget() {
-        return QueryTargetEnum.ELASTICSEARCH;
+    public String getQueryTarget() {
+        return QueryTargetEnum.ELASTICSEARCH.name();
     }
 
     @Override
@@ -287,14 +290,31 @@ public class ElasticsearchServiceImpl implements SearchService {
     @Override
     public List<String> list(QueryTargetTypeSettings abstractQueryTargetTypeSettings, QueryTargetType queryTargetType, String field) {
         List<String> returnValues = new ArrayList<>();
-        if (field.equals("index")) {
+        if (field.equals(INDEX)) {
             returnValues = getIndexes(abstractQueryTargetTypeSettings, queryTargetType);
-        } else if (field.equals("type")) {
+        } else if (field.equals(TYPE)) {
             returnValues = getTypes(abstractQueryTargetTypeSettings, queryTargetType);
-        } else if (field.equals("field")) {
+        } else if (field.equals(FIELD)) {
             returnValues = getField(abstractQueryTargetTypeSettings, queryTargetType);
         }
         return returnValues;
+    }
+
+    @Override
+    public List<Parameter> getSettingsParameters() {
+
+
+        return Arrays.asList(new Parameter[]{
+                new Parameter(CLUSTER_NAME, GuiTypes.INPUT),
+                new Parameter(ADDRESS, GuiTypes.INPUT)});
+    }
+
+    @Override
+    public List<Parameter> getSearchParameters() {
+        return Arrays.asList(new Parameter[]{
+                new Parameter(INDEX, GuiTypes.AUTOCOMPLETE_WITH_QUERY),
+                new Parameter(TYPE, GuiTypes.AUTOCOMPLETE_WITH_QUERY),
+                new Parameter(FIELD, GuiTypes.SELECT_WITH_QUERY)});
     }
 
 
@@ -305,9 +325,9 @@ public class ElasticsearchServiceImpl implements SearchService {
                 .getMetaData();
 
 
-        List<String> indexes = Lists.newArrayList(getIndexes(((ElasticQueryTargetType) queryTargetType)));
+        List<String> indexes = Lists.newArrayList(getIndexes((queryTargetType)));
         List<String> returnValues = new ArrayList<>();
-        List<String> types = Lists.newArrayList(getTypes(((ElasticQueryTargetType) queryTargetType)));
+        List<String> types = Lists.newArrayList(getTypes((queryTargetType)));
 
         if (indexes.contains("_all")) {
             String[] strings = getClient(abstractQueryTargetTypeSettings).admin().cluster()
@@ -381,7 +401,7 @@ public class ElasticsearchServiceImpl implements SearchService {
                 .getMetaData();
 
 
-        List<String> indexes = Lists.newArrayList(getIndexes(((ElasticQueryTargetType) queryTargetType)));
+        List<String> indexes = Lists.newArrayList(getIndexes((queryTargetType)));
         List<String> returnValues = new ArrayList<>();
 
         if (indexes.contains("_all")) {

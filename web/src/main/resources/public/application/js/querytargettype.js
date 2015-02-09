@@ -1,6 +1,4 @@
 /**QueryTargetType*/
-addQueryTargetType(["ELASTICSEARCH"], ElasticQueryTargetType);
-
 function getQueryTargetSource() {
     var tasksURI = baseURL+"rest/search/sources";
     var response = null;
@@ -26,7 +24,7 @@ function QueryTargetType(queryTarget) {
 
 }
 
-function ElasticQueryTargetType() {
+/*function ElasticQueryTargetType() {
     var self = this;
     ko.utils.extend(self, new QueryTargetType("ELASTICSEARCH"));
 
@@ -35,7 +33,7 @@ function ElasticQueryTargetType() {
 
     self.addConfigurableField(new AutoCompleteQueryTargetType('Index', 'index', self.index, ko.observable(self)));
     self.addConfigurableField(new SelectQueryTargetType('Type', 'type', self.type, ko.observable(self)));
-}
+}*/
 /**End QueryTargetType*/
 
 ElasticQueryTargetType.prototype.toJSON = function() {

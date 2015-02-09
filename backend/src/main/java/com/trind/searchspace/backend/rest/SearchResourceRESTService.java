@@ -28,7 +28,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * JAX-RS Example
@@ -60,7 +59,7 @@ public class SearchResourceRESTService {
     @Path("sources")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllSources() {
-        Response.ResponseBuilder builder = Response.ok().entity(sourceService.getAllSources());
+        Response.ResponseBuilder builder = Response.ok().entity(sourceService.getAllSourcesWithoutSettings());
         return builder.build();
     }
 
