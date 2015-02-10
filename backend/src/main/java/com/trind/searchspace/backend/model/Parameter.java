@@ -1,16 +1,22 @@
 package com.trind.searchspace.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Created by Joachim on 2015-02-09.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Parameter {
     String name;
-    GuiTypes guiTypes;
+    GuiTypes guiType;
     String value;
 
-    public Parameter(String name, GuiTypes guiTypes, String value) {
+    public Parameter() {
+    }
+
+    public Parameter(String name, GuiTypes guiType, String value) {
         this.name = name;
-        this.guiTypes = guiTypes;
+        this.guiType = guiType;
         this.value = value;
     }
 
@@ -20,7 +26,7 @@ public class Parameter {
 
     public Parameter(String name, GuiTypes guiTypes) {
         this.name = name;
-        this.guiTypes = guiTypes;
+        this.guiType = guiTypes;
     }
 
     public Parameter(String name, String value) {
@@ -28,8 +34,6 @@ public class Parameter {
         this.value = value;
     }
 
-    public Parameter() {
-    }
 
     public String getName() {
         return name;
@@ -39,12 +43,12 @@ public class Parameter {
         this.name = name;
     }
 
-    public GuiTypes getGuiTypes() {
-        return guiTypes;
+    public GuiTypes getGuiType() {
+        return guiType;
     }
 
-    public void setGuiTypes(GuiTypes guiTypes) {
-        this.guiTypes = guiTypes;
+    public void setGuiType(GuiTypes guiType) {
+        this.guiType = guiType;
     }
 
     public String getValue() {

@@ -17,11 +17,12 @@ function Query(queryTerm) {
     self.queryTargetType = ko.observable(new QueryTargetType());
 
     self.changeQueryTargetId = function (element) {
-        var typeName = getQueryTargetSourceById(element.queryTargetType().id());
-        var functionType = getQueryTargetTypeByName(typeName);
-        var functionObject = new functionType()
-        functionObject.id(element.queryTargetType().id());
-        self.queryTargetType(functionObject);
+        var blank = getQueryTargetTypeById(element.queryTargetType().id());
+        if(blank) {
+            self.queryTargetType(blank.cloneObject());
+        } else {
+            self.queryTargetType(new QueryTargetType());
+        }
     }
 }
 
@@ -36,7 +37,7 @@ function TermQuery() {
     self.includeOther = ko.observable(true);
 
 
-    self.addConfigurableField(new SelectQueryTargetType('Field', 'field', self.field, self.queryTargetType));
+    self.addConfigurableField(new SelectQueryTargetType('Field', 'Field', self.field, self.queryTargetType));
     self.addConfigurableField(new Input('Size', self.size));
     self.addConfigurableField(new CheckBox('IncludeUnknown', self.includeUnknown));
     self.addConfigurableField(new CheckBox('IncludeOther', self.includeOther));

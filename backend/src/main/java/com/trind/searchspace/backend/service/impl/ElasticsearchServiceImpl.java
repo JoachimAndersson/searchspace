@@ -146,11 +146,11 @@ public class ElasticsearchServiceImpl
 
         QueryStringQueryBuilder queryStringQueryBuilder = QueryBuilders.queryString(termQuery.getQueryString());
 
-        SearchRequestBuilder searchRequestBuilder = getClient(abstractQueryTargetTypeSettings).prepareSearch(getIndexes(abstractQueryTargetTypeSettings)).
+        SearchRequestBuilder searchRequestBuilder = getClient(abstractQueryTargetTypeSettings).prepareSearch(getIndexes(termQuery.getQueryTargetType())).
                 setQuery(queryStringQueryBuilder);
 
-        if (StringUtils.isNotBlank(abstractQueryTargetTypeSettings.getParameter(TYPE))) {
-            searchRequestBuilder = searchRequestBuilder.setTypes(getTypes(abstractQueryTargetTypeSettings));
+        if (StringUtils.isNotBlank(termQuery.getQueryTargetType().getParameter(TYPE))) {
+            searchRequestBuilder = searchRequestBuilder.setTypes(getTypes(termQuery.getQueryTargetType()));
         }
         return searchRequestBuilder;
     }
@@ -313,8 +313,8 @@ public class ElasticsearchServiceImpl
     public List<Parameter> getSearchParameters() {
         return Arrays.asList(new Parameter[]{
                 new Parameter(INDEX, GuiTypes.AUTOCOMPLETE_WITH_QUERY),
-                new Parameter(TYPE, GuiTypes.AUTOCOMPLETE_WITH_QUERY),
-                new Parameter(FIELD, GuiTypes.SELECT_WITH_QUERY)});
+                new Parameter(TYPE, GuiTypes.AUTOCOMPLETE_WITH_QUERY)/*,
+                new Parameter(FIELD, GuiTypes.SELECT_WITH_QUERY)*/});
     }
 
 

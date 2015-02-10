@@ -3,7 +3,6 @@
  */
 var filterNameToObject = {};
 var queryTargetSoruceMap = {};
-var queryTargetTypesToObjectMap = {};
 var chartList = [];
 
 
@@ -15,16 +14,11 @@ function getFilterType(name) {
     return filterNameToObject[name];
 }
 
-
-function addQueryTargetType(name, classType) {
-    queryTargetTypesToObjectMap[name] = classType;
+function getQueryTargetTypeById(id) {
+    return queryTargetSoruceMap[id];
 }
-
-function getQueryTargetTypeByName(name) {
-    return queryTargetTypesToObjectMap[name];
-}
-function addQueryTargetSource(id, name) {
-    queryTargetSoruceMap[id] = name;
+function addQueryTargetSource(id, ob) {
+    queryTargetSoruceMap[id] = ob;
 }
 
 function getQueryTargetSourceById(id) {

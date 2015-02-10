@@ -55,7 +55,7 @@ public class SearchServiceFactory {
     }
 
     public SearchService getSearchService(String queryTarget) {
-        if (queryTarget.equals(elasticsearchService.getQueryTarget())) {
+        if (elasticsearchService.getQueryTarget().equals(queryTarget)) {
             return elasticsearchService;
         }
         return null;

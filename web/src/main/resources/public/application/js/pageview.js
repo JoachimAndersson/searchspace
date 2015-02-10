@@ -262,12 +262,11 @@ function PageView() {
 
 function loadQueryTargetType(sourceTargetType) {
     if (sourceTargetType) {
-        var targetType = getQueryTargetTypeByName(sourceTargetType.queryTarget);
-        if (targetType) {
-            var newTargetType = new targetType();
-            loadObject(sourceTargetType, newTargetType, ["queryTarget"]);
-            return newTargetType;
-        }
+        var newTargetType = new QueryTargetType();
+        newTargetType.queryTarget(sourceTargetType.queryTarget);
+        loadObject(sourceTargetType, newTargetType, ["queryTarget"]);
+        return newTargetType;
+
     }
 }
 

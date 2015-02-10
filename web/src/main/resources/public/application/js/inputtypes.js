@@ -62,20 +62,13 @@ function SelectQueryTargetType(label, field, variable, queryTargetType) {
     });
 
     self.loadSubscribed = function () {
-        if (self.queryTargetType().index) {
-            self.queryTargetType().index.subscribe(function (val) {
-                if (self.loaded && field != 'index') {
+        jQuery.each(self.queryTargetType().settings(), function (index, setting) {
+            setting.value.subscribe(function (val) {
+                if (self.loaded) {
                     self.getList();
                 }
             });
-        }
-        if (self.queryTargetType().type) {
-            self.queryTargetType().type.subscribe(function (val) {
-                if (self.loaded && field != 'type') {
-                    self.getList();
-                }
-            });
-        }
+        });
     }
 
     self.getList = function () {

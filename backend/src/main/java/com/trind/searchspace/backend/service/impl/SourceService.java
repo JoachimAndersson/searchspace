@@ -46,7 +46,7 @@ public class SourceService {
         List<Parameter> searchParameters = searchServiceFactory.getSearchParameters(queryTargetTypeSettings);
 
         for (Parameter searchParameter : searchParameters) {
-            queryTargetTypeSettings.addParameter(new Parameter(searchParameter.getName(), searchParameter.getGuiTypes(), queryTargetTypeSettings.getParameter(searchParameter.getName())));
+            queryTargetTypeSettings.addParameter(new Parameter(searchParameter.getName(), searchParameter.getGuiType(), queryTargetTypeSettings.getParameter(searchParameter.getName())));
         }
 
         List<Parameter> settingsParameters = searchServiceFactory.getSettingsParameters(queryTargetTypeSettings);
