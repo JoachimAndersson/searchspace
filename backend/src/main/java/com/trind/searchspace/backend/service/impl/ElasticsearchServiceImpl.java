@@ -411,7 +411,6 @@ public class ElasticsearchServiceImpl
                     .getMetaData().concreteAllOpenIndices();
 
             for (String index : strings) {
-                System.out.println(index);
                 IndexMetaData indexMetaData = metaData.index(index);
                 if (indexMetaData != null) {
                     for (ObjectObjectCursor<String, MappingMetaData> stringMappingMetaDataObjectObjectCursor : indexMetaData.getMappings()) {

@@ -8,11 +8,12 @@ import com.trind.searchspace.backend.model.filter.Filter;
 import com.trind.searchspace.backend.model.mapping.FieldMapping;
 import com.trind.searchspace.backend.model.mapping.QueryTargetTypeWithField;
 import com.trind.searchspace.backend.model.query.Query;
+import com.trind.searchspace.backend.model.query.QueryType;
 import com.trind.searchspace.backend.model.query.targettype.QueryTargetType;
 import com.trind.searchspace.backend.model.query.targettype.settings.QueryTargetTypeSettings;
 import com.trind.searchspace.backend.model.result.EmptyQueryResult;
 import com.trind.searchspace.backend.model.result.QueryResult;
-import com.trind.searchspace.backend.service.SearchService;
+import com.trind.searchspace.backend.service.*;
 import com.trind.searchspace.backend.service.impl.ElasticsearchServiceImpl;
 import com.trind.searchspace.backend.service.impl.MappingService;
 import com.trind.searchspace.backend.service.impl.SourceService;
@@ -59,6 +60,29 @@ public class SearchServiceFactory {
             return elasticsearchService;
         }
         return null;
+    }
+
+    public List<QueryType> getSupportedQueryTypes(String queryType) {
+        SearchService searchService = getSearchService(queryType);
+        ArrayList<QueryType> supportedTypes = new ArrayList<>();
+        if (searchService == null) {
+            return supportedTypes;
+        }
+
+        if (searchService instanceof TermSearchService) {
+            supportedTypes.add(QueryType.TERM);
+        }
+        if (searchService instanceof HistogramSearchService) {
+            supportedTypes.add(QueryType.HISTOGRAM);
+        }
+        if (searchService instanceof ListSearchService) {
+            supportedTypes.add(QueryType.LIST);
+        }
+        if (searchService instanceof StatSearchService) {
+            supportedTypes.add(QueryType.STAT);
+        }
+
+        return supportedTypes;
     }
 
 

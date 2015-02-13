@@ -59,6 +59,9 @@ function BarChart() {
             title: {
                 text: ''
             },
+            xAxis: {
+                type: 'category'
+            },
             tooltip: {
                 pointFormat: '<b>{point.y}</b>'
             },

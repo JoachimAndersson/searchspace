@@ -15,6 +15,9 @@ function getFilterType(name) {
 }
 
 function getQueryTargetTypeById(id) {
+    if(Object.keys(queryTargetSoruceMap).length == 0) {
+        getQueryTargetSource();
+    }
     return queryTargetSoruceMap[id];
 }
 function addQueryTargetSource(id, ob) {

@@ -14,6 +14,12 @@ function getQueryTargetSource() {
                         queryTarget.settings().push(new Parameter(attribute.name, attribute.value, attribute.guiType))
                     });
                 }
+                if(entry.supportedQueryTypes) {
+                    entry.supportedQueryTypes.forEach(function (value) {
+                        queryTarget.supportedQueryTypes().push(value)
+                    });
+                }
+
                 queryTarget.id(entry.id);
                 addQueryTargetSource(entry.id, queryTarget);
             });
@@ -32,10 +38,21 @@ function QueryTargetType() {
     self.id = ko.observable();
     self.queryTarget = ko.observable();
     self.settings = ko.observableArray();
+    self.supportedQueryTypes = ko.observableArray();
 
     self.settings.subscribe(function (changes) {
         changes.forEach(function (change) {
             if (change.status === 'added') {
+
+                var baseQueryTargetType = getQueryTargetTypeById(self.id());
+                if(baseQueryTargetType) {
+                    baseQueryTargetType.settings().forEach(function (setting) {
+                        if (setting.name() == change.value.name()) {
+                            change.value.guiType(setting.guiType());
+                        }
+                    });
+                }
+
                 if (change.value.guiType() == 'AUTOCOMPLETE_WITH_QUERY') {
                     self.addConfigurableField(new AutoCompleteQueryTargetType(change.value.name(), change.value.name(), change.value.value, ko.observable(self)));
                 }

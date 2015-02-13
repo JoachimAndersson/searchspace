@@ -54,6 +54,8 @@ public class SourceService {
         for (Parameter settingsParameter : settingsParameters) {
             queryTargetTypeSettings.removeParameter(settingsParameter);
         }
+
+        queryTargetTypeSettings.setSupportedQueryTypes(searchServiceFactory.getSupportedQueryTypes(queryTargetTypeSettings.getQueryTarget()));
     }
 
 

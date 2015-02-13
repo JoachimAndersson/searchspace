@@ -20,7 +20,7 @@ var query11 = new TermQuery();
 query11.queryTargetType(new QueryTargetType());
 query11.queryTargetType().id('Test1');
 query11.queryTargetType().queryTarget("ELASTICSEARCH");
-query11.queryTargetType().settings.push(new Parameter('Index','_all','SELECT_WITH_QUERY'));
+query11.queryTargetType().settings.push(new Parameter('Index','_all','xx'));
 query11.queryTargetType().settings.push(new Parameter('Type','status','SELECT_WITH_QUERY'));
 query11.size(10);
 query11.field('user.screen_name');

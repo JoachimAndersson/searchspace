@@ -245,7 +245,6 @@ function PageView() {
             if (filterType) {
                 var newFilter = new filterType();
                 loadObject(filter, newFilter, ["type", "sourceTargetType"]);
-
                 newFilter.sourceTargetType = loadQueryTargetType(filter.sourceTargetType);
                 self.addFilter(newFilter)
 
@@ -264,7 +263,11 @@ function loadQueryTargetType(sourceTargetType) {
     if (sourceTargetType) {
         var newTargetType = new QueryTargetType();
         newTargetType.queryTarget(sourceTargetType.queryTarget);
-        loadObject(sourceTargetType, newTargetType, ["queryTarget"]);
+        loadObject(sourceTargetType, newTargetType, ["queryTarget","settings"]);
+
+        jQuery.each(sourceTargetType.settings, function (index, setting) {
+            newTargetType.settings.push(new Parameter(setting.name,setting.value,setting.guiType));
+        });
         return newTargetType;
 
     }
