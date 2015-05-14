@@ -64,7 +64,6 @@ function getChartObject(objectName) {
             returnObject = entry.chartType;
         }
     });
-
     return returnObject;
 }
 

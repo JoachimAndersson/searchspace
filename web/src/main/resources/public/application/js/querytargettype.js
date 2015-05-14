@@ -84,10 +84,7 @@ function QueryTargetType() {
         });
         return copy;
     }
-
-
 }
-
 
 function Parameter(name, value, guiTypes) {
     var self = this;
@@ -100,19 +97,6 @@ function Parameter(name, value, guiTypes) {
         return new Parameter(self.name(),self.value(),self.guiType());
     }
 }
-
-
-/*function ElasticQueryTargetType() {
- var self = this;
- ko.utils.extend(self, new QueryTargetType("ELASTICSEARCH"));
-
- self.index = ko.observable("");
- self.type = ko.observable("");
-
- self.addConfigurableField(new AutoCompleteQueryTargetType('Index', 'index', self.index, ko.observable(self)));
- self.addConfigurableField(new SelectQueryTargetType('Type', 'type', self.type, ko.observable(self)));
- }*/
-/**End QueryTargetType*/
 
 QueryTargetType.prototype.toJSON = function () {
     var copy = ko.toJS(this); //just a quick way to get a clean copy
